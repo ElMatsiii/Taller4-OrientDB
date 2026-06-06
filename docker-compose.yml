@@ -1,0 +1,12 @@
+services:
+  orientdb:
+    image: orientdb:3.2
+    ports:
+      - "2424:2424"
+      - "2480:2480"
+    environment:
+      ORIENTDB_ROOT_PASSWORD: taller4
+    volumes:
+      - orientdb_data:/orientdb/databases
+volumes:
+  orientdb_data:
