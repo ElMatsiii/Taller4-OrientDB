@@ -2,16 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import ChatWindow from './components/ChatWindow';
 import ChatInput from './components/ChatInput';
 
-const API = 'https://localhost:3001/api';
+const API = 'http://localhost:3001/api';
 
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  //cargar el historial al iniciar
+  // Cargar historial al montar
   useEffect(() => {
     fetch(`${API}/history`)
-      .then(res => res.json())
+      .then(r => r.json())
       .then(setMessages)
       .catch(console.error);
   }, []);
@@ -19,21 +19,23 @@ export default function App() {
   const sendMessage = async (text) => {
     if (loading) return;
 
+    // Agregar mensaje del usuario al estado local inmediatamente
     const userMsg = { role: 'user', content: text, id: Date.now() };
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
 
+    // Placeholder para la respuesta del asistente (streaming)
     const assistantId = Date.now() + 1;
     setMessages(prev => [...prev, { role: 'assistant', content: '', id: assistantId }]);
 
     try {
-      const res = await fetch(`${API}/chat`, {
+      const response = await fetch(`${API}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text }),
       });
 
-      const reader = res.body.getReader();
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
       while (true) {
@@ -73,4 +75,4 @@ export default function App() {
       <ChatInput onSend={sendMessage} disabled={loading} />
     </div>
   );
-}      
+}

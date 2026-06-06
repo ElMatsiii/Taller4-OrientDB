@@ -1,79 +1,75 @@
-import OrientDB from 'orientjs';
 import dotenv from 'dotenv';
 dotenv.config();
 
-let db;
+const BASE = `http://${process.env.ORIENTDB_HOST}:2480`;
+const DB = process.env.ORIENTDB_DB;
+const AUTH = 'Basic ' + Buffer.from(`${process.env.ORIENTDB_USER}:${process.env.ORIENTDB_PASS}`).toString('base64');
+
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': AUTH
+};
 
 export async function initDB() {
-    const server = OrientDB({
-        host: process.env.ORIENTDB_HOST,
-        port: parseInt(process.env.ORIENTDB_PORT),
-        username: process.env.ORIENTDB_USER,
-        password: process.env.ORIENTDB_PASSWORD
+  // Verificar si la DB existe, si no, crearla
+  const res = await fetch(`${BASE}/database/${DB}`, { headers });
+
+  if (res.status === 404) {
+    await fetch(`${BASE}/database/${DB}/plocal`, {
+      method: 'POST',
+      headers
     });
+    console.log(`Base de datos '${DB}' creada`);
+  }
 
-    //crear la base de datos si no existe
-    const exists = await server.exists(process.env.ORIENTDB_DB);
-    if (!exists) {
-        await server.create({
-            name: process.env.ORIENTDB_DB,
-            type: 'graph',
-            storage: 'plocal'
-        });
-    }
-    db = await server.use({
-        name: process.env.ORIENTDB_DB,
-        username: process.env.ORIENTDB_USER,
-        password: process.env.ORIENTDB_PASSWORD
+  // Crear clase Message si no existe
+  const classRes = await fetch(`${BASE}/class/${DB}/Message`, { headers });
+  if (classRes.status === 404) {
+    await fetch(`${BASE}/class/${DB}/Message`, {
+      method: 'POST',
+      headers
     });
+    console.log("Clase 'Message' creada");
+  }
 
-    //crear calse message si no existe
-    const classes = await db.class.list();
-    const exists_class = classes.some(c => c.name === 'Message');
-    if (!exists_class) {
-        const cls = await db.class.create('Message');
-        await cls.property.create({name: 'role', type: 'String' });
-        await cls.property.create({name: 'content', type: 'String' });
-        await cls.property.create({name: 'timestamp', type: 'String' });
-    }
-
-    console.log('OrientDB conectado y listo');
-    return db;
+  console.log('OrientDB conectado y listo');
 }
 
-export async function saveMssage({role, content}) {
-    const record = db.insert().into('Message').set({
-        role,
-        content,
-        timestamp: new Date().toISOString()
-    }).one();
-    return record;
+export async function saveMessage({ role, content }) {
+  const res = await fetch(`${BASE}/document/${DB}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      '@class': 'Message',
+      role,
+      content,
+      timestamp: new Date().toISOString()
+    })
+  });
+  return res.json();
 }
 
 export async function getHistory(limit = 100) {
-    const records = await db.select()
-    .from('Message')
-    .order('timestamp ASC')
-    .limit(limit)
-    .all();
-
-    return records.map(r => ({
-        id: r['@rid'].toString(),
-        role: r.role,
-        content: r.content,
-        timestamp: r.timestamp
-    }));
+  const query = encodeURIComponent(`SELECT * FROM Message ORDER BY timestamp ASC LIMIT ${limit}`);
+  const res = await fetch(`${BASE}/query/${DB}/sql/${query}`, { headers });
+  const data = await res.json();
+  
+  return (data.result || []).map(r => ({
+    id:        r['@rid'],
+    role:      r.role,
+    content:   r.content,
+    timestamp: r.timestamp
+  }));
 }
 
 export async function getLastNMessages(n = 10) {
-    const records = await db.select()
-    .from('Message')
-    .order('timestamp ASC')
-    .all();
+  const query = encodeURIComponent(`SELECT role, content FROM Message ORDER BY timestamp ASC`);
+  const res = await fetch(`${BASE}/query/${DB}/sql/${query}`, { headers });
+  const data = await res.json();
 
-    const last = records.slice(-n);
-    return last.map(r => ({
-        role: r.role,
-        content: r.content,
-    }));
+  const all = data.result || [];
+  return all.slice(-n).map(r => ({
+    role:    r.role,
+    content: r.content
+  }));
 }
