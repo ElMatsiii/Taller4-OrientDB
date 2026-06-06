@@ -31,45 +31,58 @@ router.post('/chat', async (req, res) => {
     res.flushHeaders();
 
     try {
-        //llamar a ollama con streaming
-        const ollamaRes = await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                model: process.env.OLLAMA_MODEL,
-                messages: context,
-                stream: true
-            })
-        });
+    const ollamaRes = await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+        model: process.env.OLLAMA_MODEL,
+        messages: context,
+        stream: true,
+        keep_alive: -1  // mantener en memoria indefinidamente
+        })
+    });
 
-        let fullResponse = '';
+    let fullResponse = '';
+    let buffer = '';
+    const reader = ollamaRes.body.getReader();
+    const decoder = new TextDecoder();
 
-        for await (const chunk of ollamaRes.body) {
-            const text = new TextDecoder().decode(chunk);
-            const lines = text.split('\n').filter(Boolean);
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-            for (const line of lines) {
-                try {
-                    const json = JSON.parse(line);
-                    const token = json.message?.content ?? '';
-                    if (token) {
-                        fullResponse += token;
-                        res.write(`data: ${JSON.stringify({ token })}\n\n`);
-                    }
+        buffer += decoder.decode(value, { stream: true });
+        console.log('BUFFER:', buffer); // LOG TEMPORAL
 
-                    if (json.done) {
-                        await saveMessage({ role: 'assistant', content: fullResponse });
-                        res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
-                        res.end();
-                    }
-                } catch (err) {
-                    console.error('Error al parsear línea de Ollama:', err);
-                }
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // guardar línea incompleta
+
+        for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+            const json = JSON.parse(line);
+            console.log('JSON parseado:', json); // LOG TEMPORAL
+            const token = json.message?.content ?? '';
+            if (token) {
+                fullResponse += token;
+                res.write(`data: ${JSON.stringify({ token })}\n\n`);
             }
+            if (json.done) {
+                if (json.done_reason === 'load') continue;    
+                await saveMessage({ role: 'assistant', content: fullResponse });
+                res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+                res.end();
+                return;
+            }
+        } catch (e) {
+            console.log('Error parseando línea:', line, e.message);
         }
+        }
+    }
     } catch (error) {
-        res.write(`data: ${JSON.stringify({ error: 'Error al comunicarse con Ollama' })}\n\n`);
-        res.end();
+    console.error('Error Ollama:', error);
+    res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+    res.end();
     }
 });
 

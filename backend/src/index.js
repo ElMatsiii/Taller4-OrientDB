@@ -13,11 +13,31 @@ app.use('/api', chatRoutes);
 
 const PORT = process.env.PORT || 3001;
 
-initDB()
-    .then(() => {
-        app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
-    })
-    .catch(err => {
-        console.error('Error al conectar con OrientDB:', err.message);
-        process.exit(1);
+async function warmupOllama() {
+  try {
+    console.log('Calentando modelo Ollama...');
+    await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: process.env.OLLAMA_MODEL,
+        messages: [{ role: 'user', content: 'hola' }],
+        stream: false,
+        keep_alive: -1  // ← mantener en memoria indefinidamente
+      })
     });
+    console.log('Modelo listo.');
+  } catch (e) {
+    console.warn('Warmup falló:', e.message);
+  }
+}
+
+initDB()
+  .then(async () => {
+    await warmupOllama();
+    app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+  })
+  .catch(err => {
+    console.error('Error al conectar con OrientDB:', err.message);
+    process.exit(1);
+  });
