@@ -21,25 +21,51 @@ export async function initDB() {
     'Authorization': 'Basic ' + Buffer.from('root:taller4pass').toString('base64')
   };
 
+  // Esperar a que OrientDB esté listo usando /server
+  let ready = false;
+  while (!ready) {
+    try {
+      const ping = await fetch(`${BASE}/server`, { headers: rootHeaders });
+      if (ping.ok) {
+        ready = true;
+        console.log('OrientDB listo');
+      } else {
+        console.log('Esperando OrientDB...');
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    } catch (e) {
+      console.log('Esperando OrientDB...', e.message);
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+
+  // Dar un segundo extra para que la DB esté completamente inicializada
+  await new Promise(r => setTimeout(r, 3000));
+
   // Crear DB si no existe
-  const res = await fetch(`${BASE}/database/${DB}`, { headers: rootHeaders });
-  if (res.status === 404) {
+  const dbCheck = await fetch(`${BASE}/listDatabases`, { headers: rootHeaders });
+  const dbList = await dbCheck.json();
+  const dbExists = dbList.databases?.includes(DB);
+
+  if (!dbExists) {
     await fetch(`${BASE}/database/${DB}/plocal`, {
       method: 'POST',
       headers: rootHeaders
     });
     console.log(`Base de datos '${DB}' creada`);
-
-    // Crear usuario admin
-    await fetch(`${BASE}/command/${DB}/sql`, {
-      method: 'POST',
-      headers: rootHeaders,
-      body: JSON.stringify({
-        command: "INSERT INTO OUser SET name='admin', password='admin', status='ACTIVE', roles=(SELECT FROM ORole WHERE name='admin')"
-      })
-    });
-    console.log("Usuario 'admin' creado");
+    await new Promise(r => setTimeout(r, 2000));
   }
+
+  // Crear usuario admin
+  const createAdmin = await fetch(`${BASE}/command/${DB}/sql`, {
+    method: 'POST',
+    headers: rootHeaders,
+    body: JSON.stringify({
+      command: "INSERT INTO OUser SET name='admin', password='admin', status='ACTIVE', roles=(SELECT FROM ORole WHERE name='admin')"
+    })
+  });
+  const adminResult = await createAdmin.json();
+  console.log('Resultado crear admin:', JSON.stringify(adminResult).slice(0, 150));
 
   // Crear clase Message si no existe
   const classRes = await fetch(`${BASE}/class/${DB}/Message`, { headers });

@@ -35,7 +35,14 @@ async function warmupOllama() {
 initDB()
   .then(async () => {
     await warmupOllama();
-    app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+        console.log('');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('  Chat IA Local listo!');
+        console.log('  Abre: http://localhost:5173');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('');
+    });
   })
   .catch(err => {
     console.error('Error al conectar con OrientDB:', err.message);
