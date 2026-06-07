@@ -13,6 +13,8 @@ services:
     build: ./backend
     ports:
       - "3001:3001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       ORIENTDB_HOST: orientdb
       ORIENTDB_PORT: 2424

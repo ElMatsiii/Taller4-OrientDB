@@ -144,13 +144,32 @@ export async function listConversations() {
 export async function deleteConversation(conversationId) {
   const { BASE, DB, headers } = getConfig();
   const rid = normalizeRid(conversationId);
-  await fetch(`${BASE}/command/${DB}/sql`, {
+
+  const deleteMessages = await fetchJson(`${BASE}/command/${DB}/sql`, {
     method: 'POST',
     headers,
     body: JSON.stringify({
-      command: `DELETE FROM Message WHERE conversation = ${rid}; DELETE FROM Conversation WHERE @rid = ${rid}`,
+      command: `DELETE FROM Message WHERE conversation = ${rid}`,
     }),
   });
+
+  if (!deleteMessages.res.ok) {
+    const errorText = deleteMessages.data?.error || JSON.stringify(deleteMessages.data);
+    throw new Error(`Error deleting messages for ${rid}: ${errorText}`);
+  }
+
+  const deleteConversation = await fetchJson(`${BASE}/command/${DB}/sql`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      command: `DELETE FROM Conversation WHERE @rid = ${rid}`,
+    }),
+  });
+
+  if (!deleteConversation.res.ok) {
+    const errorText = deleteConversation.data?.error || JSON.stringify(deleteConversation.data);
+    throw new Error(`Error deleting conversation ${rid}: ${errorText}`);
+  }
 }
 
 export async function getMessages(conversationId) {

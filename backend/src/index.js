@@ -1,10 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initDB } from './db/orientdb.js';
+import { initDB } from './modules/orientdb.js';
 import chatRoutes from './routes/chat.js';
 
 dotenv.config();
+
+console.log('Configuración Ollama:', {
+  OLLAMA_URL: process.env.OLLAMA_URL,
+  OLLAMA_MODEL: process.env.OLLAMA_MODEL,
+});
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:5173' }));
