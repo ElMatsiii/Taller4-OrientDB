@@ -18,7 +18,7 @@ export default function App() {
 
   const loadConversations = async () => {
     try {
-      const response = await fetch(`${API}/conversations`);
+      const response = await fetch(${API}/conversations);
       const data = await response.json();
       setConversations(data);
       if (data.length > 0) {
@@ -34,7 +34,7 @@ export default function App() {
     setConversationTitle(title || '');
 
     try {
-      const response = await fetch(`${API}/conversations/${encodeURIComponent(conversationId)}/messages`);
+      const response = await fetch(${API}/conversations//messages);
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -45,8 +45,8 @@ export default function App() {
 
   const createConversation = async () => {
     try {
-      const nextTitle = `Chat ${conversations.length + 1}`;
-      const response = await fetch(`${API}/conversations`, {
+      const nextTitle = Chat ;
+      const response = await fetch(${API}/conversations, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: nextTitle }),
@@ -61,7 +61,7 @@ export default function App() {
 
   const deleteConversation = async (conversationId) => {
     try {
-      await fetch(`${API}/conversations/${encodeURIComponent(conversationId)}`, {
+      await fetch(${API}/conversations/, {
         method: 'DELETE',
       });
       const updated = conversations.filter((item) => item.id !== conversationId);
@@ -86,10 +86,10 @@ export default function App() {
     let conversationId = selectedConversationId;
     if (!conversationId) {
       try {
-        const response = await fetch(`${API}/conversations`, {
+        const response = await fetch(${API}/conversations, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: `Chat ${conversations.length + 1}` }),
+          body: JSON.stringify({ title: Chat  }),
         });
         const conversation = await response.json();
         setConversations((prev) => [conversation, ...prev]);
@@ -108,7 +108,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API}/chat`, {
+      const response = await fetch(${API}/chat, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, conversationId }),
@@ -130,7 +130,8 @@ export default function App() {
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const parts = buffer.split('\n');
+        const parts = buffer.split('
+');
         buffer = parts.pop();
 
         for (const part of parts) {

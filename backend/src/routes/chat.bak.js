@@ -74,13 +74,15 @@ router.post('/chat', async (req, res) => {
   res.flushHeaders();
 
   if (createdConversation) {
-    res.write('data: ' + JSON.stringify({ conversationId: currentConversationId }) + '\n\n');
+    res.write('data: ' + JSON.stringify({ conversationId: currentConversationId }) + '
+
+');
   }
 
   try {
     console.log('Enviando a Ollama:', process.env.OLLAMA_URL, process.env.OLLAMA_MODEL);
     console.log('Contexto:', JSON.stringify(context));
-    const ollamaRes = await fetch(`${process.env.OLLAMA_URL}/api/chat`, {
+    const ollamaRes = await fetch(${process.env.OLLAMA_URL}/api/chat, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -95,7 +97,9 @@ router.post('/chat', async (req, res) => {
     if (!ollamaRes.ok) {
       const errText = await ollamaRes.text();
       console.error('Error Ollama:', errText);
-      res.write('data: ' + JSON.stringify({ error: errText }) + '\n\n');
+      res.write('data: ' + JSON.stringify({ error: errText }) + '
+
+');
       res.end();
       return;
     }
@@ -110,7 +114,8 @@ router.post('/chat', async (req, res) => {
       if (done) break;
 
       buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
+      const lines = buffer.split('
+');
       buffer = lines.pop();
 
       for (const line of lines) {
@@ -121,13 +126,17 @@ router.post('/chat', async (req, res) => {
           const token = json.message?.content ?? '';
           if (token) {
             fullResponse += token;
-            res.write('data: ' + JSON.stringify({ token }) + '\n\n');
+            res.write('data: ' + JSON.stringify({ token }) + '
+
+');
           }
 
           if (json.done) {
             if (json.done_reason === 'load') continue;
             await saveMessage({ conversationId: currentConversationId, role: 'assistant', content: fullResponse });
-            res.write('data: ' + JSON.stringify({ done: true }) + '\n\n');
+            res.write('data: ' + JSON.stringify({ done: true }) + '
+
+');
             res.end();
             return;
           }
@@ -138,7 +147,9 @@ router.post('/chat', async (req, res) => {
     }
   } catch (error) {
     console.error('Error Ollama:', error);
-    res.write('data: ' + JSON.stringify({ error: error.message }) + '\n\n');
+    res.write('data: ' + JSON.stringify({ error: error.message }) + '
+
+');
     res.end();
   }
 });
