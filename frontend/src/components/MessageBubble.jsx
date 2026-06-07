@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+
 export default function MessageBubble({ role, content }) {
   const isUser = role === 'user';
   return (
@@ -10,10 +12,12 @@ export default function MessageBubble({ role, content }) {
         color: isUser ? '#fff' : '#111',
         fontSize: 15,
         lineHeight: 1.5,
-        whiteSpace: 'pre-wrap',
         wordBreak: 'break-word',
       }}>
-        {content || <span style={{ opacity: 0.4 }}>▌</span>}
+        {content
+          ? <ReactMarkdown>{content}</ReactMarkdown>
+          : <span style={{ opacity: 0.4 }}>▌</span>
+        }
       </div>
     </div>
   );

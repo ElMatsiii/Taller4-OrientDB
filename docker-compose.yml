@@ -8,5 +8,29 @@ services:
       ORIENTDB_ROOT_PASSWORD: taller4pass
     volumes:
       - orientdb_data:/orientdb/databases
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      ORIENTDB_HOST: orientdb
+      ORIENTDB_PORT: 2424
+      ORIENTDB_USER: admin
+      ORIENTDB_PASS: admin
+      ORIENTDB_DB: chatdb
+      OLLAMA_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: gemma2:2b
+      PORT: 3001
+    depends_on:
+      - orientdb
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
 volumes:
   orientdb_data:
