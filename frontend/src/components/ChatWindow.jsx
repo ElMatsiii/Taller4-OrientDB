@@ -25,7 +25,7 @@ export default function ChatWindow({ messages, loading }) {
         </p>
       )}
       {messages.map((msg, i) => (
-        <MessageBubble key={msg.id ?? i} role={msg.role} content={msg.content} />
+        <MessageBubble key={msg.id ?? i} role={msg.role} content={msg.content} timestamp={msg.timestamp} />
       ))}
       {loading && messages[messages.length - 1]?.content === '' && (
         <div style={{ alignSelf: 'flex-start', color: '#999', fontSize: 14 }}>

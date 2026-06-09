@@ -5,7 +5,7 @@ export default function MessageBubble({ role, content, timestamp }) {
 
   const formattedTime = timestamp
     ? new Date(timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-    : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    : null;
 
   return (
     <div style={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
@@ -26,27 +26,18 @@ export default function MessageBubble({ role, content, timestamp }) {
           ? <ReactMarkdown>{content}</ReactMarkdown>
           : <span style={{ opacity: 0.4 }}>▌</span>
         }
-        <div style={{
-          marginTop: 6,
-          fontSize: 11,
-          opacity: 0.55,
-          textAlign: isUser ? 'right' : 'left',
-          color: isUser ? '#e8d8ff' : '#9da4d3',
-          letterSpacing: '0.3px',
-        }}>
-          {formattedTime && (
-            <div style={{
-              marginTop: 6,
-              fontSize: 11,
-              opacity: 0.55,
-              textAlign: isUser ? 'right' : 'left',
-              color: isUser ? '#e8d8ff' : '#9da4d3',
-              letterSpacing: '0.3px',
-            }}>
-              {formattedTime}
-            </div>
-          )}
-        </div>
+        {formattedTime && (
+          <div style={{
+            marginTop: 6,
+            fontSize: 11,
+            opacity: 0.55,
+            textAlign: isUser ? 'right' : 'left',
+            color: isUser ? '#e8d8ff' : '#9da4d3',
+            letterSpacing: '0.3px',
+          }}>
+            {formattedTime}
+          </div>
+        )}
       </div>
     </div>
   );
