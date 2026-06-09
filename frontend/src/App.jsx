@@ -134,9 +134,10 @@ export default function App() {
       }
     }
 
-    const userMsg = { role: 'user', content: text, id: Date.now() };
+    const userMsg = { role: 'user', content: text, id: Date.now(), timestamp: new Date().toISOString() };
     const assistantId = Date.now() + 1;
-    setMessages((prev) => [...prev, userMsg, { role: 'assistant', content: '', id: assistantId }]);
+    const assistantTimestamp = new Date().toISOString();
+    setMessages((prev) => [...prev, userMsg, { role: 'assistant', content: '', id: assistantId, timestamp: assistantTimestamp }]);
     setLoading(true);
 
     try {
@@ -180,6 +181,13 @@ export default function App() {
             );
           }
           if (data.done) {
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === assistantId
+                  ? { ...msg, timestamp: new Date().toISOString() }
+                  : msg
+              )
+            );
             setLoading(false);
           }
         }

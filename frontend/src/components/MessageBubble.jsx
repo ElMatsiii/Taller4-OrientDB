@@ -1,7 +1,12 @@
 import ReactMarkdown from 'react-markdown';
 
-export default function MessageBubble({ role, content }) {
+export default function MessageBubble({ role, content, timestamp }) {
   const isUser = role === 'user';
+
+  const formattedTime = timestamp
+    ? new Date(timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+    : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
   return (
     <div style={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
       <div style={{
@@ -21,6 +26,27 @@ export default function MessageBubble({ role, content }) {
           ? <ReactMarkdown>{content}</ReactMarkdown>
           : <span style={{ opacity: 0.4 }}>▌</span>
         }
+        <div style={{
+          marginTop: 6,
+          fontSize: 11,
+          opacity: 0.55,
+          textAlign: isUser ? 'right' : 'left',
+          color: isUser ? '#e8d8ff' : '#9da4d3',
+          letterSpacing: '0.3px',
+        }}>
+          {formattedTime && (
+            <div style={{
+              marginTop: 6,
+              fontSize: 11,
+              opacity: 0.55,
+              textAlign: isUser ? 'right' : 'left',
+              color: isUser ? '#e8d8ff' : '#9da4d3',
+              letterSpacing: '0.3px',
+            }}>
+              {formattedTime}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
