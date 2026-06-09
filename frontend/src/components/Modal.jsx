@@ -3,7 +3,7 @@ export default function Modal({ title, children, onClose }) {
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(4, 6, 16, 0.85)',
+      background: 'rgba(0, 0, 0, 0.6)',
       zIndex: 999,
       display: 'flex',
       alignItems: 'center',
@@ -12,36 +12,36 @@ export default function Modal({ title, children, onClose }) {
     }}>
       <div style={{
         width: '100%',
-        maxWidth: 520,
-        borderRadius: 24,
-        background: 'rgba(12, 15, 34, 0.98)',
-        border: '1px solid rgba(108, 71, 255, 0.35)',
-        boxShadow: '0 0 80px rgba(92, 53, 255, 0.22)',
+        maxWidth: 480,
+        borderRadius: 12,
+        background: 'var(--panel)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
         overflow: 'hidden',
       }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '18px 22px',
-          borderBottom: '1px solid rgba(108, 71, 255, 0.18)',
-          background: 'rgba(14, 18, 44, 0.96)',
+          padding: '16px 20px',
+          borderBottom: '1px solid var(--border)',
         }}>
-          <h3 style={{ margin: 0, fontSize: 20, color: '#eef2ff' }}>{title}</h3>
+          <h3 style={{ margin: 0, fontSize: 17, color: 'var(--text)' }}>{title}</h3>
           <button
             onClick={onClose}
             style={{
               border: 'none',
               background: 'transparent',
-              color: '#9da4d3',
-              fontSize: 20,
+              color: 'var(--text-muted)',
+              fontSize: 18,
               cursor: 'pointer',
+              lineHeight: 1,
             }}
           >
             ×
           </button>
         </div>
-        <div style={{ padding: '22px 24px' }}>
+        <div style={{ padding: '20px 22px' }}>
           {children}
         </div>
       </div>

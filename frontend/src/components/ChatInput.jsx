@@ -10,7 +10,7 @@ export default function ChatInput({ onSend, disabled }) {
   };
 
   return (
-    <div style={{ display: 'flex', gap: 12, padding: '12px 0 16px' }}>
+    <div style={{ display: 'flex', gap: 12 }}>
       <textarea
         value={text}
         onChange={e => setText(e.target.value)}
@@ -20,38 +20,35 @@ export default function ChatInput({ onSend, disabled }) {
         rows={2}
         style={{
           flex: 1,
-          padding: '14px 16px',
-          borderRadius: 18,
-          border: '1px solid rgba(95, 40, 255, 0.45)',
-          background: 'rgba(11, 15, 34, 0.9)',
-          color: '#eef0ff',
-          fontSize: 15,
+          padding: '12px 14px',
+          borderRadius: 8,
+          border: '1px solid var(--border)',
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          fontSize: 14,
           resize: 'none',
           fontFamily: 'inherit',
           outline: 'none',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.03)',
-          transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+          transition: 'border-color 0.15s ease',
         }}
-        onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(108, 71, 255, 0.33)'}
-        onBlur={e => e.target.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.03)'}
+        onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
       />
       <button
         onClick={handleSend}
         disabled={disabled || !text.trim()}
         style={{
-          padding: '0 24px',
-          borderRadius: 18,
-          border: '1px solid transparent',
-          background: disabled ? 'rgba(78, 84, 128, 0.7)' : 'linear-gradient(135deg, #6c47ff, #ff1ac1)',
-          color: '#fff',
-          fontSize: 15,
+          padding: '0 22px',
+          borderRadius: 8,
+          border: '1px solid var(--accent)',
+          background: disabled || !text.trim() ? 'var(--surface)' : 'var(--accent)',
+          color: disabled || !text.trim() ? 'var(--text-muted)' : '#fff',
+          borderColor: disabled || !text.trim() ? 'var(--border)' : 'var(--accent)',
+          fontSize: 14,
           cursor: disabled ? 'not-allowed' : 'pointer',
-          minWidth: 110,
-          boxShadow: disabled ? 'none' : '0 14px 32px rgba(108, 71, 255, 0.24)',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          minWidth: 100,
+          transition: 'background 0.15s ease',
         }}
-        onMouseEnter={e => !disabled && (e.currentTarget.style.transform = 'translateY(-1px)')}
-        onMouseLeave={e => !disabled && (e.currentTarget.style.transform = 'translateY(0)')}
       >
         Enviar
       </button>

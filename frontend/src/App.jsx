@@ -203,9 +203,9 @@ export default function App() {
       display: 'flex',
       minHeight: '100vh',
       padding: 24,
-      gap: 20,
-      background: 'radial-gradient(circle at top left, rgba(58, 95, 255, 0.16), transparent 32%), radial-gradient(circle at bottom right, rgba(255, 25, 181, 0.18), transparent 28%), #05060e',
-      animation: 'fadeIn 0.9s ease-out',
+      gap: 16,
+      background: 'var(--bg)',
+      animation: 'fadeIn 0.4s ease-out',
     }}>
       <ConversationList
         conversations={conversations}
@@ -219,59 +219,59 @@ export default function App() {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        borderRadius: 24,
+        borderRadius: 12,
         overflow: 'hidden',
-        border: '1px solid rgba(91, 43, 255, 0.35)',
-        background: 'rgba(7, 10, 24, 0.96)',
-        boxShadow: '0 0 40px rgba(93, 18, 255, 0.22)',
+        border: '1px solid var(--border)',
+        background: 'var(--panel)',
       }}>
         <div style={{
-          padding: '22px 28px',
-          borderBottom: '1px solid rgba(118, 35, 255, 0.18)',
-          background: 'linear-gradient(180deg, rgba(15, 17, 38, 0.96), rgba(15, 17, 38, 0.85))',
+          padding: '18px 24px',
+          borderBottom: '1px solid var(--border)',
+          background: 'var(--panel)',
         }}>
           <h2 style={{
             margin: 0,
-            fontSize: 26,
-            letterSpacing: '0.4px',
-            color: '#f7f8ff',
-            textShadow: '0 0 12px rgba(112, 0, 255, 0.3)',
+            fontSize: 18,
+            fontWeight: 600,
+            color: 'var(--text)',
           }}>{conversationTitle || 'Selecciona una conversación'}</h2>
         </div>
         <ChatWindow messages={messages} loading={loading} />
-        <div style={{ padding: '18px 24px', background: 'rgba(9, 12, 32, 0.95)' }}>
+        <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', background: 'var(--panel)' }}>
           <ChatInput onSend={sendMessage} disabled={loading} />
         </div>
       </div>
 
       {titleModalOpen && (
         <Modal title="Nueva conversación" onClose={() => setTitleModalOpen(false)}>
-          <p style={{ color: '#bfc6ff', marginBottom: 16 }}>Escribe un nombre para tu nueva conversación.</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 16, fontSize: 14 }}>Escribe un nombre para tu nueva conversación.</p>
           <input
             value={titleInput}
             onChange={(e) => setTitleInput(e.target.value)}
             placeholder="Título de la conversación"
             style={{
               width: '100%',
-              padding: '12px 14px',
-              borderRadius: 14,
-              border: '1px solid rgba(120, 82, 255, 0.4)',
-              background: 'rgba(18, 22, 52, 0.95)',
-              color: '#eef0ff',
+              padding: '10px 12px',
+              borderRadius: 8,
+              border: '1px solid var(--border)',
+              background: 'var(--surface)',
+              color: 'var(--text)',
               outline: 'none',
               marginBottom: 20,
+              fontSize: 14,
             }}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
             <button
               onClick={() => setTitleModalOpen(false)}
               style={{
-                padding: '10px 18px',
-                borderRadius: 14,
-                border: '1px solid rgba(140, 130, 255, 0.35)',
-                background: 'rgba(20, 24, 54, 0.88)',
-                color: '#b3b9dd',
+                padding: '9px 16px',
+                borderRadius: 8,
+                border: '1px solid var(--border)',
+                background: 'var(--surface)',
+                color: 'var(--text)',
                 cursor: 'pointer',
+                fontSize: 14,
               }}
             >
               Cancelar
@@ -282,12 +282,13 @@ export default function App() {
                 setTitleModalOpen(false);
               }}
               style={{
-                padding: '10px 18px',
-                borderRadius: 14,
-                border: 'none',
-                background: 'linear-gradient(135deg, #6c47ff, #ff1ac1)',
+                padding: '9px 16px',
+                borderRadius: 8,
+                border: '1px solid var(--accent)',
+                background: 'var(--accent)',
                 color: '#fff',
                 cursor: 'pointer',
+                fontSize: 14,
               }}
             >
               Crear conversación
@@ -298,19 +299,20 @@ export default function App() {
 
       {deleteConfirmOpen && pendingDelete && (
         <Modal title="Confirmar eliminación" onClose={cancelDeleteConversation}>
-          <p style={{ color: '#bfc6ff', marginBottom: 16 }}>
-            ¿Estás seguro de que quieres eliminar <strong>{pendingDelete.title}</strong>?
+          <p style={{ color: 'var(--text-muted)', marginBottom: 16, fontSize: 14 }}>
+            ¿Estás seguro de que quieres eliminar <strong style={{ color: 'var(--text)' }}>{pendingDelete.title}</strong>?
           </p>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
             <button
               onClick={cancelDeleteConversation}
               style={{
-                padding: '10px 18px',
-                borderRadius: 14,
-                border: '1px solid rgba(140, 130, 255, 0.35)',
-                background: 'rgba(20, 24, 54, 0.88)',
-                color: '#b3b9dd',
+                padding: '9px 16px',
+                borderRadius: 8,
+                border: '1px solid var(--border)',
+                background: 'var(--surface)',
+                color: 'var(--text)',
                 cursor: 'pointer',
+                fontSize: 14,
               }}
             >
               No
@@ -318,12 +320,13 @@ export default function App() {
             <button
               onClick={confirmDeleteConversation}
               style={{
-                padding: '10px 18px',
-                borderRadius: 14,
-                border: 'none',
-                background: 'linear-gradient(135deg, #ff2a7a, #6c47ff)',
+                padding: '9px 16px',
+                borderRadius: 8,
+                border: '1px solid var(--danger)',
+                background: 'var(--danger)',
                 color: '#fff',
                 cursor: 'pointer',
+                fontSize: 14,
               }}
             >
               Sí, eliminar

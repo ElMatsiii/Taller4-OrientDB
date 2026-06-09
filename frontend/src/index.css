@@ -1,28 +1,35 @@
 :root {
-  --text: #c7d1ff;
-  --text-h: #edf2ff;
-  --bg: #05060f;
-  --border: rgba(96, 45, 255, 0.28);
-  --code-bg: rgba(20, 24, 58, 0.92);
-  --accent: #8b56ff;
-  --accent-bg: rgba(100, 49, 255, 0.16);
-  --accent-border: rgba(120, 82, 255, 0.42);
-  --social-bg: rgba(88, 43, 182, 0.30);
-  --shadow: rgba(41, 22, 116, 0.35) 0 10px 30px -10px, rgba(68, 39, 190, 0.16) 0 16px 40px -14px;
+  --text: #ececec;
+  --text-muted: #9b9ba3;
+  --bg: #161616;
+  --panel: #1e1e1e;
+  --panel-alt: #161616;
+  --surface: #2a2a2a;
+  --surface-hover: #323232;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #5b8def;
+  --accent-hover: #4c7adf;
+  --accent-soft: rgba(91, 141, 239, 0.14);
+  --danger: #e25c5c;
+  --danger-hover: #cc4f4f;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: -apple-system, 'Segoe UI', system-ui, Roboto, Helvetica, Arial, sans-serif;
+  --heading: -apple-system, 'Segoe UI', system-ui, Roboto, Helvetica, Arial, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/1.6 var(--sans);
-  letter-spacing: 0.18px;
+  font: 16px/1.6 var(--sans);
+  letter-spacing: normal;
   color-scheme: dark;
   color: var(--text);
-  background: radial-gradient(circle at top, rgba(109, 45, 255, 0.16), transparent 28%), radial-gradient(circle at bottom right, rgba(255, 30, 170, 0.12), transparent 30%), var(--bg);
+  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -44,20 +51,21 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text);
 }
 
 h1 {
-  font-size: 52px;
-  letter-spacing: -1.4px;
+  font-size: 40px;
+  letter-spacing: -0.5px;
   margin: 0;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 18px;
   margin: 0;
 }
 
@@ -65,25 +73,48 @@ p {
   margin: 0;
 }
 
-code,
-.counter {
+code {
   font-family: var(--mono);
   display: inline-flex;
   border-radius: 4px;
-  color: var(--text-h);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 135%;
+  padding: 2px 6px;
+  background: var(--surface);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+button {
+  font-family: inherit;
+}
+
+textarea,
+input {
+  font-family: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-hover);
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -94,7 +125,7 @@ code {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -105,7 +136,7 @@ code {
 @keyframes bubbleAppear {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;

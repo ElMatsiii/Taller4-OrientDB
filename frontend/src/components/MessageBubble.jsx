@@ -11,16 +11,15 @@ export default function MessageBubble({ role, content, timestamp }) {
     <div style={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
       <div style={{
         maxWidth: '75%',
-        padding: '14px 18px',
-        borderRadius: isUser ? '22px 22px 6px 22px' : '22px 22px 22px 6px',
-        background: isUser ? 'linear-gradient(135deg, rgba(113, 86, 255, 0.95), rgba(255, 26, 193, 0.92))' : 'rgba(16, 20, 42, 0.96)',
-        color: isUser ? '#fff' : '#dfe3ff',
-        fontSize: 15,
-        lineHeight: 1.7,
+        padding: '12px 16px',
+        borderRadius: 10,
+        background: isUser ? 'var(--accent)' : 'var(--surface)',
+        color: isUser ? '#fff' : 'var(--text)',
+        fontSize: 14,
+        lineHeight: 1.6,
         wordBreak: 'break-word',
-        boxShadow: isUser ? '0 18px 28px rgba(108, 71, 255, 0.18)' : '0 18px 32px rgba(0, 0, 0, 0.18)',
-        border: isUser ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(84, 108, 255, 0.16)',
-        animation: 'bubbleAppear 0.35s ease-out',
+        border: isUser ? '1px solid var(--accent)' : '1px solid var(--border)',
+        animation: 'bubbleAppear 0.2s ease-out',
       }}>
         {content
           ? <ReactMarkdown>{content}</ReactMarkdown>
@@ -30,10 +29,9 @@ export default function MessageBubble({ role, content, timestamp }) {
           <div style={{
             marginTop: 6,
             fontSize: 11,
-            opacity: 0.55,
+            opacity: 0.7,
             textAlign: isUser ? 'right' : 'left',
-            color: isUser ? '#e8d8ff' : '#9da4d3',
-            letterSpacing: '0.3px',
+            color: isUser ? 'rgba(255,255,255,0.85)' : 'var(--text-muted)',
           }}>
             {formattedTime}
           </div>
