@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://host.docker.internal:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma2:2b';
 
@@ -19,8 +16,13 @@ const baseUrl = (() => {
   }
 })();
 
+/**
+ * Envía mensajes a Ollama y procesa la respuesta en streaming.
+ * onToken se llama por cada fragmento de texto que llega.
+ */
 export async function streamChatResponse({ messages, onToken }) {
   let response;
+
   try {
     response = await fetch(`${baseUrl.href.replace(/\/$/, '')}/api/chat`, {
       method: 'POST',
@@ -46,6 +48,7 @@ export async function streamChatResponse({ messages, onToken }) {
   let buffer = '';
   let fullResponse = '';
 
+  // Lee el stream en chunks y procesa cada línea JSON.
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
